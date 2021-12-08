@@ -176,7 +176,8 @@ class mainapp(QMainWindow,FORM_CLASS):
             self.tableWidget.setItem(rowPosition , 2, QTableWidgetItem(str(pizprice[0])))
             
         self.totalprice(currentmon,pizprice[0])
-        self.data_total(pizprice)
+        # self.data_total(pizprice)
+        self.pizzaingredients(pizprice)
 
     def databasesetup(self):
         self.db = connect("restraunt.db")
@@ -231,7 +232,19 @@ class mainapp(QMainWindow,FORM_CLASS):
         pizzaname = piz[1]
         self.cr.execute(f"select * from piz_ing WHERE item = '{pizzaname}'")
         pizing = self.cr.fetchall()
-
+        print(pizing[0])
+        for i in pizing[0]:
+            if i != "no" and "pizza_" not in i:
+                main_ing.append(i)
+        print(main_ing)
+        for x in main_ing:
+            self.cr.execute(f"select amount from ingredients WHERE item='{x}'")
+            amount = self.cr.fetchall()
+            print(amount)
+            new_amount = int(amount[0][0])-1
+            print(new_amount)
+            self.cr.execute(f"UPDATE ingredients set amount = '{new_amount}' WHERE item='{x}'")
+        self.db.commit()
 
 
 
