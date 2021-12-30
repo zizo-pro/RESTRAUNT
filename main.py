@@ -56,7 +56,7 @@ class mainapp(QMainWindow,FORM_CLASS):
         self.ui.piz_mushroom_L.clicked.connect(self.mushroomL)
         self.ui.piz_mushroom_M.clicked.connect(self.mushroomM)
         self.ui.piz_mushroom_S.clicked.connect(self.mushroomS)
-        # self.confirm_button.clicked.connect(self.pizzaingredients)
+        self.confirm_button.clicked.connect(self.confirm_order)
 
     def hide_window(self):
         self.cashier_win.hide()
@@ -72,7 +72,7 @@ class mainapp(QMainWindow,FORM_CLASS):
         self.hide_window()
         self.cashier_win.show()
         self.cashier_button_win.show()
-        
+
     def infobt(self):
         self.hide_window()
         self.info_win.show()
@@ -92,8 +92,8 @@ class mainapp(QMainWindow,FORM_CLASS):
         self.MainWindow = QMainWindow()
         self.ui = UiForm()
         self.ui.setupUi(self.MainWindow)
-        
-    
+
+
     def pizza_menu(self):
         self.MainWindow.show()
 
@@ -117,7 +117,7 @@ class mainapp(QMainWindow,FORM_CLASS):
         self.testtable()
         pizprice = self.getfromdb("pizza_peperoni_L")
         self.addtotable(pizprice)
-     
+
     def peperoniM(self):
         self.testtable()
         pizprice = self.getfromdb("pizza_peperoni_M")
@@ -174,9 +174,9 @@ class mainapp(QMainWindow,FORM_CLASS):
             self.tableWidget.setItem(rowPosition , 0, QTableWidgetItem(str(pizprice[1])))
             self.tableWidget.setItem(rowPosition , 1, QTableWidgetItem("1"))
             self.tableWidget.setItem(rowPosition , 2, QTableWidgetItem(str(pizprice[0])))
-            
+
         self.totalprice(currentmon,pizprice[0])
-        # self.data_total(pizprice)
+        self.data_total(pizprice)
         self.pizzaingredients(pizprice)
 
     def databasesetup(self):
@@ -197,7 +197,7 @@ class mainapp(QMainWindow,FORM_CLASS):
             item = self.tableWidget.item(a, 0)
             self.cashierlist.append(item.text())
             a+=1
-    
+
     def totalprice(self,current,new):
         added = int(current)+int(new)
         self.total_pric.setText(f"{added}$")
@@ -224,8 +224,6 @@ class mainapp(QMainWindow,FORM_CLASS):
 
         self.cr.execute(f"UPDATE total set count = '{newcount}' WHERE item='{pizzatotal}'")
         self.cr.execute(f"UPDATE total set total = '{newpri}' WHERE item='{pizzatotal}'")
-        self.db.commit()
-
 
     def pizzaingredients(self,piz):
         main_ing = ["dough","mozarella","tomato_sauce"]
@@ -244,6 +242,9 @@ class mainapp(QMainWindow,FORM_CLASS):
             new_amount = int(amount[0][0])-1
             print(new_amount)
             self.cr.execute(f"UPDATE ingredients set amount = '{new_amount}' WHERE item='{x}'")
+
+
+    def confirm_order(self):
         self.db.commit()
 
 
